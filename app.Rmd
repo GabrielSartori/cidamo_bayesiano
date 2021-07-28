@@ -1,0 +1,110 @@
+---
+title: "Inferência Bayesiana"
+output:
+  xaringan::moon_reader:
+    seal: false 
+    self_contained: true
+    nature: 
+        ratio: '16:9'
+        slideNumberFormat: "%current%"     
+---
+
+# Exemplo Didático 
+
++ Votos em Eleição
+
+
+# Conceitos Fundamentais
+
++ Amostra, Parâmetro, Incerteza
+
+
+# Distribuição de Probabilidade
+
++ Variável Aleatórias
++ Espaço Amostral
++ Familias de Distribuição
+
+# Homo Bayesianos 
+
+# Panorama Aprendizado de Máquina
+
++ Treino..., Teste....
++ Interpretabilidade
+
+
+# Panorama Frequentista
+
++ Estatística do Teste,
++ P-valor....
+
+# Panorama Bayesiano
+
++ Prioris
++ Posteori
++ panorama histórico
+
+# Vantagens e Desvantagens
+
+
+# Teorema Bayesiano
+
++ Regra de Bayes
+
+# Métodos de Estimação
+
++ Analítico
+    + priori conjugadas
++ Simulação
++ Aproximados
+    + amostrador de gibbs
+    + MCMC
+
+# Exemplo Teste A/B
+
++ Exemplo python (pymc3)
+
+# Exemplo Regressão Linear
+
++ Exemplo R
++ Exemplo python
+
+# Exemplo Prophet
+
+# Glossário
+
++ Léo Bastos Estimação Óbtos Covid
+
+
+<!-- Objetivos Indiretos 
+
+
+-->
+
+<!-- Links 
+https://www.bayesrulesbook.com/chapter-1.html#a-quick-history-lesson
+https://docs.pymc.io/nb_examples/index.html 
+https://www.youtube.com/watch?v=LSOl_7qAFD0
+
+-->
+
+<!-- Atividades -->
+
+<!-- LEG COnceitual: JUNTOS --> 
+
+<!-- Dennis 
+
+
+
+--> 
+
+
+<!-- Gabriel 
+
++ Temas css 
++ Didático Teste A/B
+    + Beta Binomial
+    https://docs.pymc.io/pymc-examples/examples/case_studies/BEST.html
+
++ tema css
+--> 
