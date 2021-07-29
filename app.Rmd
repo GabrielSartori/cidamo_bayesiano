@@ -59,11 +59,176 @@ output:
 + Aproximados
     + amostrador de gibbs
     + MCMC
+---
+class: middle, center
+background-color: #E0F2F1
 
 # Exemplo Teste A/B
 
-+ Exemplo python (pymc3)
+---
+class: middle, center
+background-image: url(https://miro.medium.com/max/1400/0*IbFC5ucifDGZ1Ej1.)
+background-size: contain
 
+---
+# Exemplo Teste A/B Bayesiano
+
++ Muito Natural calcular a diferença de Proporção
+
++ 25% é Maior que 5%?
+
+--
++ Estatística do Teste
+
+    + t-teste, z-teste
+
+    + comparar p-valor
+
+---
+# Contexto Bayesiano
+
++ **Assumimos uma distribuição Priori**: 
+
+$$  \frac{\Gamma(\alpha +\beta)}{\Gamma(\alpha)\Gamma(\beta)}x^{\alpha - 1}(1 - x)^{\beta - 1} $$
+
++ Parâmetros: 
+    + $\alpha$ = sucesso
+    + $\beta$ = fracasso
+
+--
++ **Distribuição da verossimilhança**: 
+
+$$    f(x) = {{N}\choose{x}} \cdot \theta^{x}(1-\theta)^{N-x} $$
+
++ Parâmetros: 
+    + n = Total de Anúncios
+    + x = Total de pessoas que clicaram
+
+---
+# Posteriori Bayesiana
+
+$$ P(\theta|\textbf{x}) = P(\theta ) \frac{P(\textbf{x} |\theta)}{P(\textbf{x})} $$
+
+$$ PDF(Beta) * PDF(Binomial) = PDF(BETA) $$
+
++ Parâmetros: 
+    + $\alpha$ = priori_sucesso + x
+    + $\beta$ = priori_fracasso + (n-x) 
+
+---
+class: middle, center
+background-image: url(https://miro.medium.com/max/475/0*EvwsWFC_P7M6RnFP)
+background-size: contain
+
+---
+class: middle, center
+background-color: #E0F2F1
+# Exemplo Simulado
+
+---
+# Aplicando Teorema de Bayes
+
+```{python, echo = FALSE}
+from scipy.stats import beta, gamma
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+```
+
+```{python}
+#Priori
+priori_alpha = 1
+priori_beta = 1
+
+# Conversão
+sample_a = 500
+conversion_a = 125
+
+sample_b = 500
+conversion_b = 25
+
+# Posteriori
+posterior_a = beta(
+      priori_alpha + conversion_a
+    , priori_beta + sample_a - conversion_a
+    )
+
+posterior_b = beta(
+      priori_alpha + conversion_b
+    , priori_beta + sample_b - conversion_b
+    )
+```
+
+---
+# Comparando resultados
+
+```{python}
+simulate_a = posterior_a.rvs(10000)
+simulate_b = posterior_b.rvs(10000)
+```
+
+```{python, eval = FALSE, echo = FALSE}
+sns.histplot(simulate_a, color = '#fee6ce')
+sns.histplot(simulate_b, color = '#d0d1e6')
+sns.despine()
+plt.legend(title = 'Campanha', loc='upper left', labels=['Simulated A', 'Simulated B'])
+plt.ylabel("")
+plt.show()
+fig.savefig('img/figure_sns.png', bbox_inches='tight')
+```
+
+
+<img src="img/fig_sns.png" alt="drawing" width="950"/>
+
+---
+# Métricas de Incerteza
+
+
+```{python, echo = FALSE}
+df = pd.DataFrame()
+
+df['sim_A'] = simulate_a
+df['sim_B'] = simulate_b
+
+df.head()
+```
+--
++ Better
++ Loss
++ Uplift
+
+---
+# Better
+
++ a probabilidade da campanha do tratamento ser melhor que a campanha do controle
+
+```{python}
+better_trat = np.sum(simulate_b > simulate_a)
+pct_better_trat = (better_trat/10000) * 100
+pct_better_trat
+```
+
+---
+# Loss
+
++ é a perda esperada se escolhermos a campanha do tratamento como melhor e na verdade ela for pior
+
+```{python}
+loss_trat = np.mean((simulate_b < simulate_a) * (simulate_b - simulate_a)/simulate_a)
+loss_trat * 100
+```
+
+---
+# UPLIFT 
++ é a melhora esperada se escolhermos a campanha tratamento como vencedora e ela realmente for melhor (uplift)
+
+```{python}
+uplift_trat = np.mean((simulate_b - simulate_a)/simulate_a) 
+uplift_trat * 100
+```
+
+---
 # Exemplo Regressão Linear
 
 + Exemplo R
@@ -86,6 +251,7 @@ https://www.bayesrulesbook.com/chapter-1.html#a-quick-history-lesson
 https://docs.pymc.io/nb_examples/index.html 
 https://www.youtube.com/watch?v=LSOl_7qAFD0
 
+http://www.sumsar.net/images/posts/2018-12-13-visualizing-the-beta-binomial/prop_model_animation.gif
 -->
 
 <!-- Atividades -->
