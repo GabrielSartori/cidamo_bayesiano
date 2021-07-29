@@ -364,17 +364,86 @@ uplift_trat * 100
 ---
 # Exemplo Regressão Linear
 
-+ Exemplo R
-+ Exemplo python
+Comparação entre modelo Frequentista e Bayesiano
 
----
+- rstan
+- Pystan
+
+```{r}
+library(rstan)
+set.seed(29072021)
+
+N <- 250
+K <- 3
+
+covariates <- replicate(K, rnorm(n = N))
+colnames(covariates) <- c("X1", "X2", "X3")
+
+X <- cbind(Intercept = 1, covariates)
+
+coefs <- c(5, .2, -1.5, .9)
+mu <- X %*% coefs
+sigma <- 2
+y <- rnorm(N, mu, sigma)
+
+# y = 5 + .2*X1 - 1.5*X2 + .9*X3 + rnorm(N, mean=0, sd=2)
+modlm <- lm(y ~ ., data = data.frame(X[, -1]))
+
+
+dat <- list(N = N, K = ncol(X), y = y, X = X)
+
+stanmodelcode <- 
+"
+data {                      // Data block
+  int<lower=1> N;           // tamanho dos dados
+  int<lower=1> K;           // numero de features
+  matrix[N, K] X;           // Matrix do modelo
+  vector[N] y;              // variável resposta
+}
+
+parameters {                // Parameters block
+  vector[K] beta;           // vetor dos coeficientess
+  real<lower=0> sigma;      // variância
+}
+
+model {                     // Model block
+  vector[N] mu;
+  mu = X * beta;            // Criação do preditor Linear
+
+  // priors
+  beta ~ normal(10, 10);
+  sigma ~ cauchy(0, 5);     // Quando sigma limitado em 0 é uma half-cauchy
+
+  // likelihood
+  y ~ normal(mu, sigma);
+}
+"
+
+
+fit <- stan(
+    model_code = stanmodelcode,
+    data = dat,
+    iter = 500,
+    warmup = 500,
+    thin = 10,
+    chains = 4
+)
+
+print(fit, pars = c("beta", "sigma"), digits = 3, prob = c(.025, .5, .975))
+
+summary(modlm)
+
+stan_trace(fit)
+
+fit
+```
+
 # Exemplo Prophet
 
 \begin{equation}
-y(t)=g(t)+s(t)+h(t)+\epsilon_{\ell}
+y(t)=g(t)+s(t)+h(t)+X(t)\beta+\epsilon_{\ell}
 \end{equation}
 
----
 ## Aonde o Prophet Brilha?
 
 * Observações de hora em hora, diárias ou semanais com pelo menos alguns meses (de preferência um ano) de história
@@ -389,10 +458,9 @@ y(t)=g(t)+s(t)+h(t)+\epsilon_{\ell}
 
 * Tendências que são curvas de crescimento não lineares, onde uma tendência atinge um limite natural ou satura depois de determinado tempo.
 
----
 ## Como o Prophet Funciona?
 
-* Uma tendência de curva de crescimento linear ou logístico por partes, detectando automaticamente as mudanças nas tendências, selecionando os pontos de mudança dos dados.
+* Uma tendência de curva de crescimento linear ou logístico por partes. O Profeta detecta automaticamente as mudanças nas tendências, selecionando os pontos de mudança dos dados.
 
 * Um componente sazonal anual modelado usando uma série de Fourier.
 
@@ -400,52 +468,50 @@ y(t)=g(t)+s(t)+h(t)+\epsilon_{\ell}
 
 * Uma lista fornecida pelo usuário de feriados importantes.
 
----
+
 ### O Modelo
 
 Descreve como os valores de $y$ variam de acordo com as coisas de que dependem (features/covariáveis).
 
 (linha 136 do https://github.com/facebook/prophet/blob/master/python/stan/unix/prophet.stan)
 ```{r, eval= FALSE}
-y ~ normal(
+model {
+  //priors
+  k ~ normal(0, 5);
+  m ~ normal(0, 5);
+  delta ~ double_exponential(0, tau);
+  sigma_obs ~ normal(0, 0.5);
+  beta ~ normal(0, sigmas);
+
+  // Likelihood
+  y ~ normal(
   trend
   .* (1 + X * (beta .* s_m))
   + X * (beta .* s_a),
   sigma_obs
-);
+  );
+}
 ```
 
-```{r, eval= FALSE}
-y ~ normal(
-  tendência
-  .* variáveis_multiplicativas
-  + variáveis_aditivas,
-  variância_observado
-);
-```
-
----
 ### Os parâmetros
 
 ```{r, eval = FALSE}
 parameters {
-  real k;                   // taxa base de crescimento da tendência
-  real m;                   // offset da tendência (intercepto)
-  vector[S] delta;          // taxa de ajuste da tendência
-  real<lower=0> sigma_obs;  // ruido das observações
-  vector[K] beta;           // coeficientes da regressão
+  real k;                   // Base trend growth rate
+  real m;                   // Trend offset
+  vector[S] delta;          // Trend rate adjustments
+  real<lower=0> sigma_obs;  // Observation noise
+  vector[K] beta;           // Regressor coefficients
 }
 ```
 
-k e m são parâmetros para a tendência inicial e eles definem que a linha de tendência faz até o primeiro ponto de mudança.
+k e m são parâmetros para a tendência inicial e eles definem o que a linha de tendência faz até o primeiro ponto de mudança.
 
 delta é um vetor de valores, cada um dos quais é quanto (e em que direção) a tendência muda em cada ponto de mudança. 
 Por exemplo, se k é 0,5 e delta[1] é -0,3, então, após o primeiro ponto de mudança, a inclinação da tendência é 0,5-0,3 = 0,2.
 
 Por padrão, o Prophet adiciona 10 termos de Fourier para sazonalidade anual e 10 para sazonalidade semanal à matriz de regressão. 
 Estes são gerados em R / python antes que os dados sejam enviados para Stan.
-
----
 
 ### As Prioris
 
@@ -457,8 +523,6 @@ sigma_obs ~ normal(0, 0.5);
 beta ~ normal(0, sigmas);
 
 ```
-
-normal (0,5) é uma distribuição normal centrada em zero com variância cinco. 
 
 Os valores nos dados são escalonados antes de serem enviados para Stan, de forma que tudo esteja entre 0 e 1. 
 
