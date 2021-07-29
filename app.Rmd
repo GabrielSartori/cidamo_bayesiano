@@ -164,7 +164,7 @@ background-size: contain
 ---
 # Conceitos
 
-<img src="https://i.stack.imgur.com/IvFiO.png" alt="drawing" width="300"/>
+<img src="https://i.stack.imgur.com/IvFiO.png" alt="drawing" width="600"/>
 
 
 ---
@@ -418,6 +418,11 @@ uplift_trat * 100
 ```
 
 ---
+class: middle, center
+background-color: #E0F2F1
+# Exemplo Regressão Linear
+
+---
 # Exemplo Regressão Linear
 
 Comparação entre modelo Frequentista e Bayesiano
@@ -513,6 +518,10 @@ print(fit, pars = c("beta", "sigma"), digits = 3, prob = c(.025, .5, .975))
 broom::tidy(modlm)  
 ```
 
+---
+class: middle, center
+background-color: #E0F2F1
+# Exemplo Prophet
 
 ---
 # Exemplo Prophet
