@@ -9,23 +9,154 @@ output:
         slideNumberFormat: "%current%"     
 ---
 
-# Exemplo Didático 
+# Panorama Metodologicas
 
-+ Votos em Eleição
++ Aprendizado de Máquina
 
++ Estatística Frequentista
 
++ **Estatística Bayesiana**
+
+    + Regressão
+    
+    + Teste A/B 
+
+    + Prophet 
+
+---
 # Conceitos Fundamentais
 
-+ Amostra, Parâmetro, Incerteza
+.pull-left[
+
+<img src="https://raw.githubusercontent.com/walmes/Tikz/master/src/population_sample_vertical.png" alt="drawing" width="300"/>
+]
+
+.pull-right[
++ População: Conjunto de todos os elementos sob investigação.
+
++ Amostra: Subconjunto da população.
+
++ Variável de interesse: característica a ser observada em cada indivíduo da amostra.
+
+]
 
 
-# Distribuição de Probabilidade
+---
+class: middle, center
+background-color: #E0F2F1
+# Aprendizagem de Máquina 
 
-+ Variável Aleatórias
-+ Espaço Amostral
-+ Familias de Distribuição
+---
+class: top, left
+background-image: url(https://miro.medium.com/max/724/1*r73p1rxMZWnZLoYi5Odf4A.png)
+background-size: contain
 
-# Homo Bayesianos 
+---
+background-image: url(https://pbs.twimg.com/media/Dv7-J-tXQAAfQsN.jpg:large)
+background-size: contain
+<!-- Overfitting -->
+
+---
+# Característica 
+
++ Prioriza Predição
+
++ No espírito fail fast, move quickly.
+
++ Não possui muitas suposições, mas possui. (i.i.d)
+
++ Otimização numérica dos desvios
+
+---
+# Vantagens / Desvantagens
+
+.pull-left[
+
++ A prova do modelo é o desempenho do conjunto de teste.
+
++ Formas simples e genéricas de teste de performance emprestadas da estatística: reamostragem.
+
++ Métricas de desempenho de fácil compreensão.
+
++ Pode-se combiná-los de várias formas: ensembles.
+
+]
+
+.pull-right[
+
++ Interpretabilidade
++ Durabilidade
+
+]
+
+---
+class: middle, center
+background-color: #E0F2F1
+# Estatística Frequentista
+
+---
+class: top, left
+background-image: url(https://raw.githubusercontent.com/walmes/Tikz/master/src/variavel_aleatoria2.png)
+background-size: contain
+
+---
+class: top, left
+background-image: url(https://miro.medium.com/max/770/1*szMCjXuMDfKu6L9T9c34wg.png)
+background-size: contain
+
+---
+class: top, left
+background-image: url(https://raw.githubusercontent.com/walmes/Tikz/master/src/conceito_regressao.png)
+background-size: auto
+
+# Modelagem 
+
+---
+
+# Característica 
+
++ Prioriza Inferência
+
++ Distribuição de Probabilidade são assumidas para definição dos modelos
+
++ Possui pressupostos (i.i.d)
+
+
+---
+# Vantagens / Desvantagens
+
+.pull-left[
+
++ Método Robusto
+
++ Metrifica a incerteza
+
++ Interpretabilidade
+
++ Pode ser analisado com poucos dados
+
+]
+
+.pull-right[
+
++ Tempo de Ajuste
+
++ Não é ideal para grandes dados 
+
+]
+
+----
+class: middle, center
+background-color: #E0F2F1
+# Estatística Bayesiano
+
+---
+class: top, left
+background-image: url(https://3.bp.blogspot.com/-TS6IWlltRZQ/TchlV7UB5PI/AAAAAAAABjY/7Cdi5qvDvQA/s1600/actuary-actuarius-evolution.jpg)
+background-size: contain
+
+
+
 
 # Panorama Aprendizado de Máquina
 
@@ -37,6 +168,8 @@ output:
 
 + Estatística do Teste,
 + P-valor....
+
+
 
 # Panorama Bayesiano
 
@@ -234,13 +367,14 @@ uplift_trat * 100
 + Exemplo R
 + Exemplo python
 
-
+---
 # Exemplo Prophet
 
 \begin{equation}
 y(t)=g(t)+s(t)+h(t)+\epsilon_{\ell}
 \end{equation}
 
+---
 ## Aonde o Prophet Brilha?
 
 * Observações de hora em hora, diárias ou semanais com pelo menos alguns meses (de preferência um ano) de história
@@ -255,9 +389,10 @@ y(t)=g(t)+s(t)+h(t)+\epsilon_{\ell}
 
 * Tendências que são curvas de crescimento não lineares, onde uma tendência atinge um limite natural ou satura depois de determinado tempo.
 
+---
 ## Como o Prophet Funciona?
 
-* Uma tendência de curva de crescimento linear ou logístico por partes. O Profeta detecta automaticamente as mudanças nas tendências, selecionando os pontos de mudança dos dados.
+* Uma tendência de curva de crescimento linear ou logístico por partes, detectando automaticamente as mudanças nas tendências, selecionando os pontos de mudança dos dados.
 
 * Um componente sazonal anual modelado usando uma série de Fourier.
 
@@ -265,7 +400,7 @@ y(t)=g(t)+s(t)+h(t)+\epsilon_{\ell}
 
 * Uma lista fornecida pelo usuário de feriados importantes.
 
-
+---
 ### O Modelo
 
 Descreve como os valores de $y$ variam de acordo com as coisas de que dependem (features/covariáveis).
@@ -289,6 +424,7 @@ y ~ normal(
 );
 ```
 
+---
 ### Os parâmetros
 
 ```{r, eval = FALSE}
@@ -301,13 +437,15 @@ parameters {
 }
 ```
 
-k e m são parâmetros para a tendência inicial e eles definem o que a linha de tendência faz até o primeiro ponto de mudança.
+k e m são parâmetros para a tendência inicial e eles definem que a linha de tendência faz até o primeiro ponto de mudança.
 
 delta é um vetor de valores, cada um dos quais é quanto (e em que direção) a tendência muda em cada ponto de mudança. 
 Por exemplo, se k é 0,5 e delta[1] é -0,3, então, após o primeiro ponto de mudança, a inclinação da tendência é 0,5-0,3 = 0,2.
 
 Por padrão, o Prophet adiciona 10 termos de Fourier para sazonalidade anual e 10 para sazonalidade semanal à matriz de regressão. 
 Estes são gerados em R / python antes que os dados sejam enviados para Stan.
+
+---
 
 ### As Prioris
 
@@ -338,6 +476,8 @@ Isso significa que esperamos que os valores de delta sejam zero (ou muito próxi
 Delta descreve o quanto a tendência muda em um ponto de mudança; usando este anterior, estamos dizendo que a tendência provavelmente não mudará; portanto, os dados devem conter fortes evidências de uma mudança de tendência para que haja uma mudança de fato no resultado final.
 
 sigmas por padrão é 10, portanto, esta é uma priori ainda mais vaga (não informativa) do que na tendência.
+
+---
 
 # Glossário
 
